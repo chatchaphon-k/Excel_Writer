@@ -1,5 +1,7 @@
 package model;
 
+import java.awt.Desktop;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.util.List;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -192,14 +194,16 @@ public class Writer_Excel
         return sheet.getLastRowNum() > 0;
     }
 
-    public void export(String path2output) throws Exception
+    public void export(String path2resDir, String output_filename, boolean is_auto_open_resDir) throws Exception
     {
         alertDefaultMsg(1);
-        FileOutputStream output = new FileOutputStream(path2output + ext);
+        FileOutputStream output = new FileOutputStream(path2resDir + output_filename + ext);
         wb.write(output);
         output.close();
         wb.close();
         alertDefaultMsg(3);
+        if(is_auto_open_resDir)
+            Desktop.getDesktop().open(new File(path2resDir));
     }
 
     public void alertDefaultMsg(int msg_i)

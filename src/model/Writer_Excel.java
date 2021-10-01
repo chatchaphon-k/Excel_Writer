@@ -11,14 +11,14 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-public class Writer_Excel 
+public abstract class Writer_Excel 
 {
+    private String ext;
     private Workbook wb;
     private Sheet sheet;
     protected Row row;
     protected int row_insert;
     protected int total_cols;
-    private String ext;
 
     // <editor-fold defaultstate="collapsed" desc="INITIAL">
 
@@ -60,19 +60,19 @@ public class Writer_Excel
     protected void add_rowData_nextToLastRow(String[] arr_data)
     {
         create_new_row();
-        Writer_Excel.this.set_row_data(row, arr_data);
+        set_row_data(row, arr_data);
     }
 
     protected void add_rowData_nextToLastRow(List<String> dataList)
     {
         create_new_row();
-        Writer_Excel.this.set_row_data(row, dataList);
+        set_row_data(row, dataList);
     }
 
     protected void add_rowData_nextToLastRow(Cell[] arr_data)
     {
         create_new_row();
-        Writer_Excel.this.set_row_data(row, arr_data);
+        set_row_data(row, arr_data);
     }
     
     private void create_new_row()
@@ -189,6 +189,40 @@ public class Writer_Excel
 
     // </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="GETTER">
+
+    public Workbook wb()
+    {
+        return wb;
+    }
+
+    public Sheet sheet()
+    {
+        return sheet;
+    }
+
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="SETTER">
+
+    protected void set_sheet(String sheet_name)
+    {
+        sheet = wb.getSheet(sheet_name);
+    }
+    
+    protected void set_column_name(int row_i, String[] cols_name)
+    {
+        row = sheet().createRow(row_i);
+        set_row_data(row, cols_name);
+    }
+
+    protected void set_column_name(String[] cols_name)
+    {
+        set_column_name(0, cols_name);
+    }
+
+    // </editor-fold>
+
     public boolean is_row_existed()
     {
         return sheet.getLastRowNum() > 0;
@@ -197,7 +231,7 @@ public class Writer_Excel
     public void export(String path2resDir, String output_filename, boolean is_auto_open_resDir) throws Exception
     {
         alertDefaultMsg(1);
-        FileOutputStream output = new FileOutputStream(path2resDir + output_filename + ext);
+        FileOutputStream output = new FileOutputStream(path2resDir + "\\" + output_filename + ext);
         wb.write(output);
         output.close();
         wb.close();

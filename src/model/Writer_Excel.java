@@ -3,6 +3,7 @@ package model;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -228,16 +229,25 @@ public abstract class Writer_Excel
         return sheet.getLastRowNum() > 0;
     }
 
-    public void export(String path2resDir, String output_filename, boolean is_auto_open_resDir) throws Exception
+    public void export_wOpenDir(String path2resDir, String output_filename) throws Exception
+    {
+        export(path2resDir, output_filename);
+        open_dir(path2resDir);
+    }
+
+    public void export(String path2resDir, String output_filename) throws Exception
+    {
+        export(path2resDir + "\\" + output_filename);
+    }
+
+    public void export(String path2output) throws Exception
     {
         alertDefaultMsg(1);
-        FileOutputStream output = new FileOutputStream(path2resDir + "\\" + output_filename + ext);
+        FileOutputStream output = new FileOutputStream(path2output + ext);
         wb.write(output);
         output.close();
         wb.close();
         alertDefaultMsg(3);
-        if(is_auto_open_resDir)
-            Desktop.getDesktop().open(new File(path2resDir));
     }
 
     public void alertDefaultMsg(int msg_i)
@@ -248,5 +258,10 @@ public abstract class Writer_Excel
             case 2: System.err.println("\tERROR to convert to excel file"); break;
             case 3: System.out.println("\r\tConvert to excel file successful."); break;
         }
+    }
+
+    public void open_dir(String path2resDir) throws IOException
+    {
+        Desktop.getDesktop().open(new File(path2resDir));
     }
 }

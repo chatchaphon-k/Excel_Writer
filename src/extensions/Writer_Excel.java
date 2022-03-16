@@ -1,4 +1,4 @@
-package model;
+package extensions;
 
 import java.awt.Desktop;
 import java.io.File;
@@ -33,7 +33,7 @@ public abstract class Writer_Excel
         init(isSingleSheet, ext);
     }
 
-    private void init(boolean isSingleSheet, String ext)
+    public void init(boolean isSingleSheet, String ext)
     {
         set_output_type(ext);
         if(isSingleSheet)
@@ -75,7 +75,13 @@ public abstract class Writer_Excel
         create_new_row();
         set_row_data(row, arr_data);
     }
-    
+
+    protected void add_rowData_nextToLastRow(double[] arr_data)
+    {
+        create_new_row();
+        set_row_data_num(row, arr_data);
+    }
+
     private void create_new_row()
     {
         row_insert = (sheet.getLastRowNum() > 0) ? sheet.getLastRowNum() + 1 : 1;
@@ -133,6 +139,13 @@ public abstract class Writer_Excel
         total_cols = arr_data.length;
         for(int i = 0; i < total_cols; i++)
             row.createCell(i).setCellValue(arr_data[i].getStringCellValue());
+    }
+
+    protected void set_row_data_num(Row row, double[] dataList)
+    {
+        total_cols = dataList.length;
+        for(int i = 0; i < total_cols; i++)
+            row.createCell(i).setCellValue(dataList[i]);
     }
 
     protected void set_row_data(Row row, List<String> dataList)
@@ -217,7 +230,18 @@ public abstract class Writer_Excel
         set_row_data(row, cols_name);
     }
 
+    protected void set_column_name(int row_i, List<String> cols_name)
+    {
+        row = sheet().createRow(row_i);
+        set_row_data(row, cols_name);
+    }
+
     protected void set_column_name(String[] cols_name)
+    {
+        set_column_name(0, cols_name);
+    }
+
+    protected void set_column_name(List<String> cols_name)
     {
         set_column_name(0, cols_name);
     }
@@ -254,9 +278,9 @@ public abstract class Writer_Excel
     {
         switch(msg_i)
         {
-            case 1: System.out.print("\r\tExporting data to excel file"); break;
-            case 2: System.err.println("\tERROR to convert to excel file"); break;
-            case 3: System.out.println("\r\tConvert to excel file successful."); break;
+            case 1: System.out.print("\r\t\t- Exporting data to excel file"); break;
+            case 2: System.err.println("\t\t- ERROR to convert to excel file"); break;
+            case 3: System.out.println("\r\t\t- Convert to excel file successful"); break;
         }
     }
 
